@@ -168,8 +168,8 @@ PlasmoidItem {
 
         Item {
             id: dial
-            visible: root.usage.status === "ok"
-                && Plasmoid.formFactor === PlasmaCore.Types.Planar
+            visible: Plasmoid.formFactor === PlasmaCore.Types.Planar
+                && root.usage.status !== "error"
             anchors.fill: parent
             anchors.margins: Kirigami.Units.largeSpacing
 
@@ -376,7 +376,9 @@ PlasmoidItem {
         }
 
         ColumnLayout {
-            visible: root.usage.status !== "ok"
+            visible: root.usage.status === "error"
+                || (Plasmoid.formFactor !== PlasmaCore.Types.Planar
+                    && root.usage.status !== "ok")
             anchors.fill: parent
             anchors.margins: Kirigami.Units.largeSpacing
             spacing: Kirigami.Units.smallSpacing
