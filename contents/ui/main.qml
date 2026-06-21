@@ -278,15 +278,15 @@ PlasmoidItem {
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 y: parent.height * 0.78
-                width: Math.min(parent.width, parent.height) * 0.35
-                height: Math.max(4, Math.min(parent.width, parent.height) * 0.09)
+                width: Math.min(parent.width, parent.height) * 0.42
+                height: Math.max(5, Math.min(parent.width, parent.height) * 0.12)
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 text: i18n("Codex")
-                color: Plasmoid.configuration.percentageColor || "#eff0f1"
-                font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 0.95
+                color: dialCanvas.trackColor
+                font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 1.15
                 fontSizeMode: Text.Fit
-                minimumPixelSize: 3
+                minimumPixelSize: 4
                 font.weight: Font.Normal
             }
 
