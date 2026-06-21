@@ -25,6 +25,7 @@ PlasmoidItem {
     })
     property bool refreshing: false
     property string lastError: ""
+    property var notificationStateCache: null
     property string helperPath: decodeURIComponent(
         Qt.resolvedUrl("../code/fetch_limits.py").toString().replace("file://", ""))
     readonly property int refreshIntervalMs: Math.max(
@@ -53,18 +54,26 @@ PlasmoidItem {
     }
 
     function savedNotificationState() {
+        if (root.notificationStateCache !== null) {
+            return root.notificationStateCache
+        }
         const saved = String(Plasmoid.configuration.notificationState || "")
-        if (!saved) return ({})
+        if (!saved) {
+            root.notificationStateCache = ({})
+            return root.notificationStateCache
+        }
         try {
             const parsed = JSON.parse(saved)
-            return parsed && typeof parsed === "object" ? parsed : ({})
+            root.notificationStateCache = parsed && typeof parsed === "object"
+                ? parsed : ({})
         } catch (error) {
-            return ({})
+            root.notificationStateCache = ({})
         }
+        return root.notificationStateCache
     }
 
     function processWindowNotifications(title, window, previous, threshold,
-        warningEnabled, notificationsEnabled) {
+        warningEnabled, notificationsEnabled, observedAt) {
         if (!window) return null
 
         const remaining = Math.max(0, Math.min(100,
@@ -72,12 +81,21 @@ PlasmoidItem {
         const resetsAt = Number(window.resetsAt || 0)
         const exhausted = remaining <= 0
         const hasPrevious = previous && typeof previous === "object"
-        const resetChanged = hasPrevious && previous.resetsAt > 0
-            && resetsAt > 0 && Number(previous.resetsAt) !== resetsAt
+        const previousResetAt = hasPrevious ? Number(previous.resetsAt || 0) : 0
+        const previousResetPassed = previousResetAt > 0
+            && observedAt >= previousResetAt
+        const resetChanged = hasPrevious && previousResetPassed
+            && resetsAt > 0 && previousResetAt !== resetsAt
         const restored = hasPrevious && Boolean(previous.exhausted) && !exhausted
         let warned = hasPrevious ? Boolean(previous.warned) : remaining <= threshold
 
-        if (resetChanged || remaining > threshold) warned = false
+        // A rolling-window reset timestamp can move while the window is active.
+        // Retain the current cycle boundary until it has actually passed.
+        const effectiveResetAt = hasPrevious && previousResetAt > 0
+            && !previousResetPassed
+            ? previousResetAt : resetsAt
+
+        if (resetChanged || restored) warned = false
 
         if (hasPrevious && notificationsEnabled) {
             if (restored
@@ -104,7 +122,7 @@ PlasmoidItem {
         if (remaining <= threshold) warned = true
 
         return ({
-            resetsAt: resetsAt,
+            resetsAt: effectiveResetAt,
             remaining: remaining,
             warned: warned,
             exhausted: exhausted
@@ -126,15 +144,16 @@ PlasmoidItem {
                 sameIdentity ? previous.primary : null,
                 Number(Plasmoid.configuration.fiveHourWarningThreshold || 20),
                 Boolean(Plasmoid.configuration.fiveHourWarningEnabled),
-                notificationsEnabled),
+                notificationsEnabled, Number(snapshot.fetchedAt || Date.now() / 1000)),
             secondary: root.processWindowNotifications(
                 i18n("Weekly limit"), snapshot.secondary,
                 sameIdentity ? previous.secondary : null,
                 Number(Plasmoid.configuration.weeklyWarningThreshold || 20),
                 Boolean(Plasmoid.configuration.weeklyWarningEnabled),
-                notificationsEnabled)
+                notificationsEnabled, Number(snapshot.fetchedAt || Date.now() / 1000))
         }
         const serialized = JSON.stringify(next)
+        root.notificationStateCache = next
         if (serialized !== String(Plasmoid.configuration.notificationState || "")) {
             Plasmoid.configuration.notificationState = serialized
         }
@@ -223,8 +242,6 @@ PlasmoidItem {
             }
         }
     }
-
-    Component.onCompleted: refresh()
 
     compactRepresentation: MouseArea {
         id: compact
