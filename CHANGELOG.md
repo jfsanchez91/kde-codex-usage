@@ -1,0 +1,22 @@
+# Changelog
+
+All notable changes to KDE Codex Usage are documented here.
+
+## [0.8.0] - 2026-06-21
+
+### Added
+
+- Plasma 6 desktop and panel representations.
+- Five-hour and weekly Codex usage gauges.
+- Detailed reset and update information in the panel popup.
+- Configurable refresh interval, panel content, gauge colors, and label color.
+- Context-aware settings for desktop and panel instances.
+- Release packaging and validation tooling.
+
+### Notes
+
+- Requires an authenticated Codex CLI session.
+- Uses the Codex app-server `account/rateLimits/read` method.
+- Displays ChatGPT/Codex plan limits, not OpenAI API billing usage.
+
+[0.8.0]: https://github.com/jfsanchez91/kde-codex-usage/releases/tag/v0.8.0

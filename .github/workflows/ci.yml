@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install validation tools
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils zip
+
+      - name: Validate Python
+        run: python3 -m py_compile contents/code/fetch_limits.py
+
+      - name: Validate metadata and configuration
+        run: |
+          python3 -m json.tool metadata.json >/dev/null
+          xmllint --noout contents/config/main.xml
+          bash -n install.sh
+          bash -n scripts/release.sh
+
+      - name: Build store archive
+        run: scripts/release.sh --skip-plasma-validation
+
+      - name: Upload store archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: kde-codex-usage-plasmoid
+          path: |
+            dist/*.plasmoid
+            dist/*.sha256

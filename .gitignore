@@ -4,6 +4,7 @@ __pycache__/
 
 # Plasma package and build artifacts
 build/
+dist/
 *.plasmoid
 *.tar.gz
 
@@ -21,4 +22,3 @@ Thumbs.db
 
 .local/
 .env
-
