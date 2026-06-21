@@ -26,8 +26,12 @@ PlasmoidItem {
     readonly property int refreshIntervalMs: Math.max(
         1, Number(Plasmoid.configuration.refreshIntervalSeconds)) * 1000
 
-    switchWidth: Kirigami.Units.gridUnit * 12
-    switchHeight: Kirigami.Units.gridUnit * 8
+    // Desktop widgets always retain the dial, even at very small sizes.
+    // Panel applets keep normal compact/full switching thresholds.
+    switchWidth: Plasmoid.formFactor === PlasmaCore.Types.Planar
+        ? 0 : Kirigami.Units.gridUnit * 12
+    switchHeight: Plasmoid.formFactor === PlasmaCore.Types.Planar
+        ? 0 : Kirigami.Units.gridUnit * 8
     preferredRepresentation: Plasmoid.formFactor === PlasmaCore.Types.Planar
         ? fullRepresentation : compactRepresentation
 
@@ -156,7 +160,8 @@ PlasmoidItem {
             : root.usage.status === "ok"
                 ? panelDetails.implicitHeight + Kirigami.Units.smallSpacing * 2
                 : Kirigami.Units.gridUnit * 8
-        Layout.minimumHeight: implicitHeight
+        Layout.minimumHeight: Plasmoid.formFactor === PlasmaCore.Types.Planar
+            ? 0 : implicitHeight
         Layout.preferredHeight: implicitHeight
         Layout.maximumHeight: Plasmoid.formFactor === PlasmaCore.Types.Planar
             ? Number.POSITIVE_INFINITY : implicitHeight
