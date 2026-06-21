@@ -148,9 +148,18 @@ PlasmoidItem {
     }
 
     fullRepresentation: Item {
+        id: fullView
+
         implicitWidth: Kirigami.Units.gridUnit * 20
         implicitHeight: Plasmoid.formFactor === PlasmaCore.Types.Planar
-            ? Kirigami.Units.gridUnit * 17 : Kirigami.Units.gridUnit * 24
+            ? Kirigami.Units.gridUnit * 17
+            : root.usage.status === "ok"
+                ? panelDetails.implicitHeight + Kirigami.Units.smallSpacing * 2
+                : Kirigami.Units.gridUnit * 8
+        Layout.minimumHeight: implicitHeight
+        Layout.preferredHeight: implicitHeight
+        Layout.maximumHeight: Plasmoid.formFactor === PlasmaCore.Types.Planar
+            ? Number.POSITIVE_INFINITY : implicitHeight
 
         Item {
             id: dial
@@ -266,49 +275,58 @@ PlasmoidItem {
         }
 
         ColumnLayout {
+            id: panelDetails
             visible: root.usage.status === "ok"
                 && Plasmoid.formFactor !== PlasmaCore.Types.Planar
-            anchors.fill: parent
-            anchors.margins: Kirigami.Units.largeSpacing
-            spacing: Kirigami.Units.largeSpacing
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.margins: Kirigami.Units.smallSpacing
+            spacing: Kirigami.Units.smallSpacing
 
-            ColumnLayout {
+            RowLayout {
                 Layout.fillWidth: true
-                spacing: 0
+                spacing: Kirigami.Units.smallSpacing
 
                 QQC2.Label {
-                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
                     horizontalAlignment: Text.AlignLeft
                     text: root.planLabel(root.usage.planType)
                     color: Plasmoid.configuration.percentageColor || "#eff0f1"
-                    font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 1.35
+                    font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 1.15
                     font.weight: Font.Normal
                 }
 
+                Item { Layout.fillWidth: true }
+
                 QQC2.Label {
-                    Layout.fillWidth: true
-                    horizontalAlignment: Text.AlignLeft
-                    text: root.usage.limitId
-                        ? i18n("Usage bucket: %1", root.usage.limitId) : i18n("Usage limits")
+                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                    horizontalAlignment: Text.AlignRight
+                    text: i18n("Updated %1", Qt.formatTime(
+                        new Date(root.usage.fetchedAt * 1000), "h:mm:ss AP"))
                     color: Kirigami.Theme.disabledTextColor
+                    font.pixelSize: Kirigami.Theme.smallFont.pixelSize
                     font.weight: Font.Normal
                 }
             }
 
-            LimitCard {
+            LimitInfoRow {
                 Layout.fillWidth: true
                 windowData: root.usage.primary
                 accentColor: Plasmoid.configuration.fiveHourColor || "#3daee9"
                 title: i18n("5-hour limit")
                 shortLabel: i18n("5h")
+                showSeparator: true
             }
 
-            LimitCard {
+            LimitInfoRow {
                 Layout.fillWidth: true
+                Layout.topMargin: Kirigami.Units.smallSpacing
                 windowData: root.usage.secondary
                 accentColor: Plasmoid.configuration.weeklyColor || "#2ecc71"
                 title: i18n("Weekly limit")
                 shortLabel: i18n("W")
+                showSeparator: false
             }
 
             Rectangle {
@@ -331,16 +349,6 @@ PlasmoidItem {
                 }
             }
 
-            Item { Layout.fillHeight: true }
-
-            QQC2.Label {
-                Layout.fillWidth: true
-                horizontalAlignment: Text.AlignLeft
-                text: i18n("Updated: %1", root.updatedAtLabel())
-                color: Kirigami.Theme.disabledTextColor
-                font.pixelSize: Kirigami.Theme.smallFont.pixelSize
-                font.weight: Font.Normal
-            }
         }
 
         ColumnLayout {
@@ -453,31 +461,31 @@ PlasmoidItem {
         }
     }
 
-    component LimitCard: Rectangle {
-        id: card
+    component LimitInfoRow: Item {
+        id: infoRow
 
         required property var windowData
         required property color accentColor
         required property string title
         required property string shortLabel
+        property bool showSeparator: true
 
-        implicitHeight: Kirigami.Units.gridUnit * 6
-        radius: Kirigami.Units.cornerRadius
-        color: Kirigami.Theme.alternateBackgroundColor
-        border.color: accentColor
-        border.width: 1
+        implicitHeight: Kirigami.Units.gridUnit * 3.4
+        Layout.minimumHeight: implicitHeight
+        Layout.preferredHeight: implicitHeight
+        Layout.maximumHeight: implicitHeight
 
         RowLayout {
             anchors.fill: parent
-            anchors.margins: Kirigami.Units.largeSpacing
-            spacing: Kirigami.Units.largeSpacing
+            spacing: Kirigami.Units.smallSpacing
 
             PanelGauge {
-                Layout.preferredWidth: Kirigami.Units.gridUnit * 4
-                Layout.preferredHeight: Kirigami.Units.gridUnit * 4
-                windowData: card.windowData
-                gaugeColor: card.accentColor
-                baseLabel: card.shortLabel
+                Layout.preferredWidth: Kirigami.Units.gridUnit * 3
+                Layout.preferredHeight: Kirigami.Units.gridUnit * 3
+                Layout.alignment: Qt.AlignVCenter
+                windowData: infoRow.windowData
+                gaugeColor: infoRow.accentColor
+                baseLabel: infoRow.shortLabel
             }
 
             ColumnLayout {
@@ -487,16 +495,16 @@ PlasmoidItem {
                 QQC2.Label {
                     Layout.fillWidth: true
                     horizontalAlignment: Text.AlignLeft
-                    text: card.title
-                    color: card.accentColor
-                    font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 1.1
+                    text: infoRow.title
+                    color: infoRow.accentColor
+                    font.pixelSize: Kirigami.Theme.defaultFont.pixelSize
                     font.weight: Font.Normal
                 }
 
                 QQC2.Label {
                     Layout.fillWidth: true
                     horizontalAlignment: Text.AlignLeft
-                    text: i18n("Resets: %1", root.resetAtLabel(card.windowData))
+                    text: i18n("Resets: %1", root.resetAtLabel(infoRow.windowData))
                     color: Kirigami.Theme.textColor
                     font.weight: Font.Normal
                 }
@@ -504,11 +512,21 @@ PlasmoidItem {
                 QQC2.Label {
                     Layout.fillWidth: true
                     horizontalAlignment: Text.AlignLeft
-                    text: i18n("Resets in: %1", root.resetsInLabel(card.windowData))
+                    text: i18n("Resets in: %1", root.resetsInLabel(infoRow.windowData))
                     color: Kirigami.Theme.disabledTextColor
                     font.weight: Font.Normal
                 }
             }
+        }
+
+        Rectangle {
+            visible: infoRow.showSeparator
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            height: 1
+            color: Kirigami.Theme.disabledTextColor
+            opacity: 0.25
         }
     }
 }
