@@ -242,7 +242,7 @@ PlasmoidItem {
                 anchors.horizontalCenter: parent.horizontalCenter
                 y: parent.height * 0.43
                 width: Math.min(parent.width, parent.height) * 0.42
-                height: Math.max(4, Math.min(parent.width, parent.height) * 0.1)
+                height: Math.max(5, Math.min(parent.width, parent.height) * 0.12)
 
                 Text {
                     anchors.left: parent.left
@@ -253,7 +253,7 @@ PlasmoidItem {
                     verticalAlignment: Text.AlignVCenter
                     text: root.usage.primary ? root.usage.primary.remainingPercent + "%" : "--%"
                     color: Plasmoid.configuration.percentageColor || "#eff0f1"
-                    font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 1.05
+                    font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 1.2
                     fontSizeMode: Text.Fit
                     minimumPixelSize: 3
                     font.weight: Font.Normal
@@ -268,7 +268,7 @@ PlasmoidItem {
                     verticalAlignment: Text.AlignVCenter
                     text: root.usage.secondary ? root.usage.secondary.remainingPercent + "%" : "--%"
                     color: Plasmoid.configuration.percentageColor || "#eff0f1"
-                    font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 1.05
+                    font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 1.2
                     fontSizeMode: Text.Fit
                     minimumPixelSize: 3
                     font.weight: Font.Normal
@@ -278,13 +278,13 @@ PlasmoidItem {
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 y: parent.height * 0.78
-                width: Math.min(parent.width, parent.height) * 0.42
-                height: Math.max(5, Math.min(parent.width, parent.height) * 0.12)
+                width: Math.min(parent.width, parent.height) * 0.46
+                height: Math.max(6, Math.min(parent.width, parent.height) * 0.14)
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 text: i18n("Codex")
                 color: dialCanvas.trackColor
-                font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 1.15
+                font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 1.3
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 4
                 font.weight: Font.Normal
