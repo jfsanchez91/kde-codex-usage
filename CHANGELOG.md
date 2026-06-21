@@ -2,6 +2,12 @@
 
 All notable changes to KDE Codex Usage are documented here.
 
+## [0.8.2] - 2026-06-21
+
+### Changed
+
+- Register the bundled product icon in the user icon theme so Plasma's widget picker displays it.
+
 ## [0.8.1] - 2026-06-21
 
 ### Added
@@ -27,3 +33,4 @@ All notable changes to KDE Codex Usage are documented here.
 
 [0.8.0]: https://github.com/jfsanchez91/kde-codex-usage/releases/tag/v0.8.0
 [0.8.1]: https://github.com/jfsanchez91/kde-codex-usage/releases/tag/v0.8.1
+[0.8.2]: https://github.com/jfsanchez91/kde-codex-usage/releases/tag/v0.8.2

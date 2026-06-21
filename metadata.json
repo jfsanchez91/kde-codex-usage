@@ -10,11 +10,11 @@
         "Category": "System Information",
         "Copyright": "Copyright 2026 jfsanchez91",
         "Description": "Monitor Codex rolling usage limits from the Plasma desktop or panel",
-        "Icon": "utilities-system-monitor",
+        "Icon": "com.github.jfsanchez91.kde-codex-usage",
         "Id": "com.github.jfsanchez91.kde-codex-usage",
         "License": "MIT",
         "Name": "Codex Usage",
-        "Version": "0.8.1",
+        "Version": "0.8.2",
         "Website": "https://github.com/jfsanchez91/kde-codex-usage"
     },
     "X-Plasma-API-Minimum-Version": "6.0"
