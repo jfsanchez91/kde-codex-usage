@@ -1,0 +1,19 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "jfsanchez91"
+            }
+        ],
+        "Category": "System Information",
+        "Description": "Monitor Codex rolling usage limits from the Plasma desktop or panel",
+        "Icon": "utilities-system-monitor",
+        "Id": "com.github.jfsanchez91.kde-codex-usage",
+        "License": "MIT",
+        "Name": "Codex Usage",
+        "Version": "0.7.1",
+        "Website": "https://github.com/jfsanchez91/kde-codex-usage"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

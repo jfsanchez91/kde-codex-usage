@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+    <kcfgfile name=""/>
+    <group name="General">
+        <entry name="refreshIntervalSeconds" type="Int">
+            <label>Refresh interval in seconds</label>
+            <default>10</default>
+            <min>1</min>
+            <max>3600</max>
+        </entry>
+        <entry name="panelDisplay" type="Int">
+            <label>Usage shown in panel mode</label>
+            <default>0</default>
+            <min>0</min>
+            <max>2</max>
+        </entry>
+        <entry name="fiveHourColor" type="String">
+            <label>Five-hour arc color</label>
+            <default>#3daee9</default>
+        </entry>
+        <entry name="weeklyColor" type="String">
+            <label>Weekly arc color</label>
+            <default>#2ecc71</default>
+        </entry>
+        <entry name="percentageColor" type="String">
+            <label>Percentage label color</label>
+            <default>#eff0f1</default>
+        </entry>
+    </group>
+</kcfg>
