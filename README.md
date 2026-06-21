@@ -44,6 +44,12 @@ seconds and the panel defaults to the five-hour limit. The two arc colors are
 independently configurable, while both percentage labels share a separate
 configurable color.
 
+Desktop notifications can be configured independently for the five-hour and
+weekly limits. Each limit has one remaining-capacity warning threshold. The
+widget can also notify when a window resets and when capacity becomes available
+again after exhaustion. Notification state is persisted so regular refreshes
+and Plasma restarts do not repeat the same warning.
+
 Panel mode uses the same 270-degree gauge language rather than a generic icon.
 It shows the selected limit directly, or two miniature gauges when both limits
 are enabled. Panel hover tooltips are disabled; clicking opens a styled details

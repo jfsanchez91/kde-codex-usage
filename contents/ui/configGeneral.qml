@@ -11,6 +11,13 @@ Kirigami.FormLayout {
 
     property alias cfg_refreshIntervalSeconds: refreshInterval.value
     property alias cfg_panelDisplay: panelDisplay.currentIndex
+    property alias cfg_notificationsEnabled: notificationsEnabled.checked
+    property alias cfg_resetNotificationsEnabled: resetNotificationsEnabled.checked
+    property alias cfg_availabilityNotificationsEnabled: availabilityNotificationsEnabled.checked
+    property alias cfg_fiveHourWarningEnabled: fiveHourWarningEnabled.checked
+    property alias cfg_fiveHourWarningThreshold: fiveHourWarningThreshold.value
+    property alias cfg_weeklyWarningEnabled: weeklyWarningEnabled.checked
+    property alias cfg_weeklyWarningThreshold: weeklyWarningThreshold.value
     property string cfg_fiveHourColor: "#3daee9"
     property string cfg_weeklyColor: "#2ecc71"
     property string cfg_percentageColor: "#eff0f1"
@@ -47,6 +54,80 @@ Kirigami.FormLayout {
             i18n("Weekly limit"),
             i18n("Both limits")
         ]
+    }
+
+    Kirigami.Heading {
+        Kirigami.FormData.isSection: true
+        text: i18n("Notifications")
+        level: 2
+    }
+
+    QQC2.CheckBox {
+        id: notificationsEnabled
+        Kirigami.FormData.label: i18n("Desktop notifications:")
+        text: i18n("Enabled")
+    }
+
+    QQC2.CheckBox {
+        id: resetNotificationsEnabled
+        enabled: notificationsEnabled.checked
+        text: i18n("Notify when a limit resets")
+    }
+
+    QQC2.CheckBox {
+        id: availabilityNotificationsEnabled
+        enabled: notificationsEnabled.checked
+        text: i18n("Notify when usage is available again")
+    }
+
+    RowLayout {
+        Kirigami.FormData.label: i18n("5-hour warning:")
+        enabled: notificationsEnabled.checked
+
+        QQC2.CheckBox {
+            id: fiveHourWarningEnabled
+            text: i18n("Enabled at")
+        }
+
+        QQC2.SpinBox {
+            id: fiveHourWarningThreshold
+            enabled: fiveHourWarningEnabled.checked
+            from: 1
+            to: 99
+            editable: true
+            textFromValue: function(value, locale) {
+                return i18n("%1% remaining", value)
+            }
+            valueFromText: function(text, locale) {
+                const parsed = parseInt(text)
+                return isNaN(parsed) ? 20 : parsed
+            }
+        }
+    }
+
+    RowLayout {
+        Kirigami.FormData.label: i18n("Weekly warning:")
+        enabled: notificationsEnabled.checked
+
+        QQC2.CheckBox {
+            id: weeklyWarningEnabled
+            text: i18n("Enabled at")
+        }
+
+        QQC2.SpinBox {
+            id: weeklyWarningThreshold
+            enabled: weeklyWarningEnabled.checked
+            from: 1
+            to: 99
+            editable: true
+            textFromValue: function(value, locale) {
+                return i18n("%1% remaining", value)
+            }
+            valueFromText: function(text, locale) {
+                const parsed = parseInt(text)
+                return isNaN(parsed) ? 20 : parsed
+            }
+        }
     }
 
     Kirigami.Heading {

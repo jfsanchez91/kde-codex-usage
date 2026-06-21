@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls as QQC2
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
+import org.kde.notification as KNotifications
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.plasma5support as Plasma5Support
 import org.kde.plasma.plasmoid
@@ -43,6 +44,100 @@ PlasmoidItem {
         lastError = ""
         limitsSource.disconnectSource(limitsSource.command)
         limitsSource.connectSource(limitsSource.command)
+    }
+
+    function sendUsageNotification(title, message) {
+        usageNotification.title = title
+        usageNotification.text = message
+        usageNotification.sendEvent()
+    }
+
+    function savedNotificationState() {
+        const saved = String(Plasmoid.configuration.notificationState || "")
+        if (!saved) return ({})
+        try {
+            const parsed = JSON.parse(saved)
+            return parsed && typeof parsed === "object" ? parsed : ({})
+        } catch (error) {
+            return ({})
+        }
+    }
+
+    function processWindowNotifications(title, window, previous, threshold,
+        warningEnabled, notificationsEnabled) {
+        if (!window) return null
+
+        const remaining = Math.max(0, Math.min(100,
+            Number(window.remainingPercent)))
+        const resetsAt = Number(window.resetsAt || 0)
+        const exhausted = remaining <= 0
+        const hasPrevious = previous && typeof previous === "object"
+        const resetChanged = hasPrevious && previous.resetsAt > 0
+            && resetsAt > 0 && Number(previous.resetsAt) !== resetsAt
+        const restored = hasPrevious && Boolean(previous.exhausted) && !exhausted
+        let warned = hasPrevious ? Boolean(previous.warned) : remaining <= threshold
+
+        if (resetChanged || remaining > threshold) warned = false
+
+        if (hasPrevious && notificationsEnabled) {
+            if (restored
+                && Boolean(Plasmoid.configuration.availabilityNotificationsEnabled)) {
+                root.sendUsageNotification(
+                    i18n("Codex usage available again"),
+                    i18n("%1 is available again with %2% remaining.",
+                        title, remaining))
+            } else if (resetChanged
+                && Boolean(Plasmoid.configuration.resetNotificationsEnabled)) {
+                root.sendUsageNotification(
+                    i18n("Codex limit reset"),
+                    i18n("%1 has reset and now has %2% remaining.",
+                        title, remaining))
+            } else if (!resetChanged && !restored && warningEnabled && !warned
+                && remaining > 0 && remaining <= threshold) {
+                root.sendUsageNotification(
+                    i18n("Codex usage warning"),
+                    i18n("%1 has %2% remaining and resets in %3.",
+                        title, remaining, root.resetsInLabel(window)))
+            }
+        }
+
+        if (remaining <= threshold) warned = true
+
+        return ({
+            resetsAt: resetsAt,
+            remaining: remaining,
+            warned: warned,
+            exhausted: exhausted
+        })
+    }
+
+    function processUsageNotifications(snapshot) {
+        if (!snapshot || snapshot.status !== "ok") return
+
+        const previous = root.savedNotificationState()
+        const identity = String(snapshot.limitId || snapshot.planType || "unknown")
+        const sameIdentity = previous.identity === identity
+        const notificationsEnabled = Boolean(
+            Plasmoid.configuration.notificationsEnabled)
+        const next = {
+            identity: identity,
+            primary: root.processWindowNotifications(
+                i18n("5-hour limit"), snapshot.primary,
+                sameIdentity ? previous.primary : null,
+                Number(Plasmoid.configuration.fiveHourWarningThreshold || 20),
+                Boolean(Plasmoid.configuration.fiveHourWarningEnabled),
+                notificationsEnabled),
+            secondary: root.processWindowNotifications(
+                i18n("Weekly limit"), snapshot.secondary,
+                sameIdentity ? previous.secondary : null,
+                Number(Plasmoid.configuration.weeklyWarningThreshold || 20),
+                Boolean(Plasmoid.configuration.weeklyWarningEnabled),
+                notificationsEnabled)
+        }
+        const serialized = JSON.stringify(next)
+        if (serialized !== String(Plasmoid.configuration.notificationState || "")) {
+            Plasmoid.configuration.notificationState = serialized
+        }
     }
 
     function resetAtLabel(window) {
@@ -92,6 +187,16 @@ PlasmoidItem {
             + i18n("Updated: %1", root.updatedAtLabel())
     }
 
+    KNotifications.Notification {
+        id: usageNotification
+        eventId: "notification"
+        iconName: "com.github.jfsanchez91.kde-codex-usage"
+        flags: KNotifications.Notification.CloseOnTimeout
+            | KNotifications.Notification.DefaultEvent
+        urgency: KNotifications.Notification.NormalUrgency
+        autoDelete: false
+    }
+
     Plasma5Support.DataSource {
         id: limitsSource
         readonly property string command: "python3 \"" + root.helperPath + "\""
@@ -109,6 +214,7 @@ PlasmoidItem {
             }
             try {
                 const parsed = JSON.parse(output.split("\n").pop())
+                root.processUsageNotifications(parsed)
                 root.usage = parsed
                 root.lastError = parsed.status === "error" ? parsed.message : ""
             } catch (error) {

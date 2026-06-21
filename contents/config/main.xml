@@ -28,5 +28,41 @@
             <label>Percentage label color</label>
             <default>#eff0f1</default>
         </entry>
+        <entry name="notificationsEnabled" type="Bool">
+            <label>Enable usage notifications</label>
+            <default>true</default>
+        </entry>
+        <entry name="resetNotificationsEnabled" type="Bool">
+            <label>Notify when a usage window resets</label>
+            <default>true</default>
+        </entry>
+        <entry name="availabilityNotificationsEnabled" type="Bool">
+            <label>Notify when exhausted usage becomes available again</label>
+            <default>true</default>
+        </entry>
+        <entry name="fiveHourWarningEnabled" type="Bool">
+            <label>Warn when five-hour remaining usage is low</label>
+            <default>true</default>
+        </entry>
+        <entry name="fiveHourWarningThreshold" type="Int">
+            <label>Five-hour remaining usage warning threshold</label>
+            <default>20</default>
+            <min>1</min>
+            <max>99</max>
+        </entry>
+        <entry name="weeklyWarningEnabled" type="Bool">
+            <label>Warn when weekly remaining usage is low</label>
+            <default>true</default>
+        </entry>
+        <entry name="weeklyWarningThreshold" type="Int">
+            <label>Weekly remaining usage warning threshold</label>
+            <default>20</default>
+            <min>1</min>
+            <max>99</max>
+        </entry>
+        <entry name="notificationState" type="String">
+            <label>Internal notification deduplication state</label>
+            <default></default>
+        </entry>
     </group>
 </kcfg>

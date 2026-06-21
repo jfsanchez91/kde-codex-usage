@@ -2,6 +2,14 @@
 
 All notable changes to KDE Codex Usage are documented here.
 
+## [0.8.3] - 2026-06-21
+
+### Added
+
+- Configurable low-capacity warnings for the five-hour and weekly limits.
+- Notifications when a limit resets or exhausted usage becomes available again.
+- Persistent notification deduplication across refreshes and Plasma restarts.
+
 ## [0.8.2] - 2026-06-21
 
 ### Changed
@@ -34,3 +42,4 @@ All notable changes to KDE Codex Usage are documented here.
 [0.8.0]: https://github.com/jfsanchez91/kde-codex-usage/releases/tag/v0.8.0
 [0.8.1]: https://github.com/jfsanchez91/kde-codex-usage/releases/tag/v0.8.1
 [0.8.2]: https://github.com/jfsanchez91/kde-codex-usage/releases/tag/v0.8.2
+[0.8.3]: https://github.com/jfsanchez91/kde-codex-usage/releases/tag/v0.8.3
