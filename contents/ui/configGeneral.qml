@@ -3,6 +3,8 @@ import QtQuick.Controls as QQC2
 import QtQuick.Dialogs
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
+import org.kde.plasma.core as PlasmaCore
+import org.kde.plasma.plasmoid
 
 Kirigami.FormLayout {
     id: root
@@ -13,6 +15,13 @@ Kirigami.FormLayout {
     property string cfg_weeklyColor: "#2ecc71"
     property string cfg_percentageColor: "#eff0f1"
     property int colorTarget: 0
+    readonly property bool isDesktop: Plasmoid.formFactor === PlasmaCore.Types.Planar
+
+    Kirigami.Heading {
+        Kirigami.FormData.isSection: true
+        text: i18n("General")
+        level: 2
+    }
 
     QQC2.SpinBox {
         id: refreshInterval
@@ -31,12 +40,19 @@ Kirigami.FormLayout {
 
     QQC2.ComboBox {
         id: panelDisplay
+        visible: !root.isDesktop
         Kirigami.FormData.label: i18n("Panel shows:")
         model: [
             i18n("5-hour limit"),
             i18n("Weekly limit"),
             i18n("Both limits")
         ]
+    }
+
+    Kirigami.Heading {
+        Kirigami.FormData.isSection: true
+        text: root.isDesktop ? i18n("Desktop appearance") : i18n("Panel appearance")
+        level: 2
     }
 
     RowLayout {
