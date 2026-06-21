@@ -277,7 +277,7 @@ PlasmoidItem {
 
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
-                y: parent.height * 0.78
+                y: parent.height * 0.75
                 width: Math.min(parent.width, parent.height) * 0.46
                 height: Math.max(6, Math.min(parent.width, parent.height) * 0.14)
                 horizontalAlignment: Text.AlignHCenter
