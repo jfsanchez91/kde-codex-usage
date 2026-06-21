@@ -237,37 +237,56 @@ PlasmoidItem {
                 }
             }
 
-            RowLayout {
+            Item {
+                id: percentageLabels
                 anchors.horizontalCenter: parent.horizontalCenter
                 y: parent.height * 0.43
                 width: Math.min(parent.width, parent.height) * 0.42
-                spacing: Kirigami.Units.smallSpacing
+                height: Math.max(4, Math.min(parent.width, parent.height) * 0.1)
 
-                QQC2.Label {
-                    Layout.fillWidth: true
+                Text {
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    width: parent.width / 2 - 1
                     horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
                     text: root.usage.primary ? root.usage.primary.remainingPercent + "%" : "--%"
                     color: Plasmoid.configuration.percentageColor || "#eff0f1"
                     font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 1.05
+                    fontSizeMode: Text.Fit
+                    minimumPixelSize: 3
                     font.weight: Font.Normal
                 }
 
-                QQC2.Label {
-                    Layout.fillWidth: true
+                Text {
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    width: parent.width / 2 - 1
                     horizontalAlignment: Text.AlignRight
+                    verticalAlignment: Text.AlignVCenter
                     text: root.usage.secondary ? root.usage.secondary.remainingPercent + "%" : "--%"
                     color: Plasmoid.configuration.percentageColor || "#eff0f1"
                     font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 1.05
+                    fontSizeMode: Text.Fit
+                    minimumPixelSize: 3
                     font.weight: Font.Normal
                 }
             }
 
-            QQC2.Label {
+            Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 y: parent.height * 0.78
+                width: Math.min(parent.width, parent.height) * 0.35
+                height: Math.max(4, Math.min(parent.width, parent.height) * 0.09)
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
                 text: i18n("Codex")
                 color: Plasmoid.configuration.percentageColor || "#eff0f1"
                 font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 0.95
+                fontSizeMode: Text.Fit
+                minimumPixelSize: 3
                 font.weight: Font.Normal
             }
 
