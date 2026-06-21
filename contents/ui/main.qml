@@ -495,12 +495,15 @@ PlasmoidItem {
         property bool showSeparator: true
 
         implicitHeight: Kirigami.Units.gridUnit * 3.4
+            + (showSeparator ? Kirigami.Units.largeSpacing : 0)
         Layout.minimumHeight: implicitHeight
         Layout.preferredHeight: implicitHeight
         Layout.maximumHeight: implicitHeight
 
         RowLayout {
             anchors.fill: parent
+            anchors.bottomMargin: infoRow.showSeparator
+                ? Kirigami.Units.largeSpacing : 0
             spacing: Kirigami.Units.smallSpacing
 
             PanelGauge {
