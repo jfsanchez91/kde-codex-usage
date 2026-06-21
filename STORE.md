@@ -53,7 +53,7 @@ by OpenAI.
 
 ## Assets to upload manually
 
-- Square product icon
+- Square product icon (`icon.png`)
 - Desktop widget screenshot
 - Panel gauge screenshot
 - Expanded panel popup screenshot

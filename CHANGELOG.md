@@ -2,6 +2,12 @@
 
 All notable changes to KDE Codex Usage are documented here.
 
+## [0.8.1] - 2026-06-21
+
+### Added
+
+- Custom application icon in the runtime plasmoid and panel details header.
+
 ## [0.8.0] - 2026-06-21
 
 ### Added
@@ -20,3 +26,4 @@ All notable changes to KDE Codex Usage are documented here.
 - Displays ChatGPT/Codex plan limits, not OpenAI API billing usage.
 
 [0.8.0]: https://github.com/jfsanchez91/kde-codex-usage/releases/tag/v0.8.0
+[0.8.1]: https://github.com/jfsanchez91/kde-codex-usage/releases/tag/v0.8.1

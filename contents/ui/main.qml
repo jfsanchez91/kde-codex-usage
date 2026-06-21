@@ -9,6 +9,9 @@ import org.kde.plasma.plasmoid
 PlasmoidItem {
     id: root
 
+    readonly property url appIcon: Qt.resolvedUrl("../../icon.png")
+
+    Plasmoid.icon: root.appIcon
     Plasmoid.backgroundHints: Plasmoid.formFactor === PlasmaCore.Types.Planar
         ? PlasmaCore.Types.NoBackground
         : PlasmaCore.Types.DefaultBackground
@@ -311,6 +314,15 @@ PlasmoidItem {
             RowLayout {
                 Layout.fillWidth: true
                 spacing: Kirigami.Units.smallSpacing
+
+                Image {
+                    Layout.preferredWidth: Kirigami.Units.iconSizes.smallMedium
+                    Layout.preferredHeight: Kirigami.Units.iconSizes.smallMedium
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+                    source: root.appIcon
+                    fillMode: Image.PreserveAspectFit
+                    mipmap: true
+                }
 
                 QQC2.Label {
                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter

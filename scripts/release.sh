@@ -49,7 +49,7 @@ rm -f "$archive" "$archive.sha256"
 
 (
     cd "$root_dir"
-    zip -q -r "$archive" metadata.json contents LICENSE \
+    zip -q -r "$archive" metadata.json contents icon.png LICENSE \
         -x '*/__pycache__/*' '*.pyc' '*~'
 )
 
