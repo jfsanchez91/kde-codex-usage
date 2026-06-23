@@ -82,6 +82,14 @@ PlasmoidItem {
         const exhausted = remaining <= 0
         const hasPrevious = previous && typeof previous === "object"
         const previousResetAt = hasPrevious ? Number(previous.resetsAt || 0) : 0
+        const previousResetNotification =
+            hasPrevious && previous.resetNotification
+                && typeof previous.resetNotification === "object"
+                ? previous.resetNotification : null
+        const previousAvailabilityNotification =
+            hasPrevious && previous.availabilityNotification
+                && typeof previous.availabilityNotification === "object"
+                ? previous.availabilityNotification : null
         const previousResetPassed = previousResetAt > 0
             && observedAt >= previousResetAt
         const resetChanged = hasPrevious && previousResetPassed
@@ -94,22 +102,38 @@ PlasmoidItem {
         const effectiveResetAt = hasPrevious && previousResetAt > 0
             && !previousResetPassed
             ? previousResetAt : resetsAt
+        let resetNotification = previousResetNotification
+        let availabilityNotification = previousAvailabilityNotification
 
         if (resetChanged || restored) warned = false
 
         if (hasPrevious && notificationsEnabled) {
+            const resetAlreadyNotified = previousResetNotification
+                && Number(previousResetNotification.resetsAt || 0) === resetsAt
+            const availabilityAlreadyNotified = previousAvailabilityNotification
+                && Number(previousAvailabilityNotification.resetsAt || 0) === resetsAt
             if (restored
-                && Boolean(Plasmoid.configuration.availabilityNotificationsEnabled)) {
+                && Boolean(Plasmoid.configuration.availabilityNotificationsEnabled)
+                && !availabilityAlreadyNotified) {
                 root.sendUsageNotification(
                     i18n("Codex usage available again"),
                     i18n("%1 is available again with %2% remaining.",
                         title, remaining))
+                availabilityNotification = ({
+                    resetsAt: resetsAt,
+                    notifiedAt: observedAt
+                })
             } else if (resetChanged
-                && Boolean(Plasmoid.configuration.resetNotificationsEnabled)) {
+                && Boolean(Plasmoid.configuration.resetNotificationsEnabled)
+                && !resetAlreadyNotified) {
                 root.sendUsageNotification(
                     i18n("Codex limit reset"),
                     i18n("%1 has reset and now has %2% remaining.",
                         title, remaining))
+                resetNotification = ({
+                    resetsAt: resetsAt,
+                    notifiedAt: observedAt
+                })
             } else if (!resetChanged && !restored && warningEnabled && !warned
                 && remaining > 0 && remaining <= threshold) {
                 root.sendUsageNotification(
@@ -125,7 +149,9 @@ PlasmoidItem {
             resetsAt: effectiveResetAt,
             remaining: remaining,
             warned: warned,
-            exhausted: exhausted
+            exhausted: exhausted,
+            resetNotification: resetNotification,
+            availabilityNotification: availabilityNotification
         })
     }
 
